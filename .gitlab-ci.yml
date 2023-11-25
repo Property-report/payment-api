@@ -1,0 +1,33 @@
+image: docker:latest
+
+services:
+  - docker:dind
+
+build:
+  stage: build
+  script:
+    - docker build -t proppayment .
+    - docker tag proppayment registry.jacobscodingstuff.com/property-report/$CI_PROJECT_NAME:$CI_COMMIT_REF_NAME
+    - docker login -p $registry_password -u $registry_user registry.jacobscodingstuff.com
+    - docker push registry.jacobscodingstuff.com/property-report/$CI_PROJECT_NAME:$CI_COMMIT_REF_NAME
+    - apk add --no-cache curl
+    - |
+      curl -X POST \
+      https://hooks.slack.com/services/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 \
+      -H 'Content-Type: application/json' \
+      -d "{\"text\": \"new service avalible for deployment.\\n${CI_PROJECT_NAME}: ${CI_COMMIT_REF_NAME}\"}"
+  only:
+    - tags
+  except:
+    - branches
+
+sonarqube-check:
+  image:
+      name: sonarsource/sonar-scanner-cli:latest
+      entrypoint: [""]
+  stage: test
+  script:
+    - sonar-scanner -Dsonar.qualitygate.wait=true -Dsonar.projectKey=$CI_PROJECT_NAME -Dsonar.projectName=$CI_PROJECT_NAME -Dsonar.language=python
+  allow_failure: true
+  only:
+    - master

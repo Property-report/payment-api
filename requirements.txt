@@ -1,0 +1,16 @@
+Flask==0.11.1
+Flask-Script==2.0.5
+requests==2.10.0
+flask-sqlalchemy==2.2
+sqlalchemy-migrate==0.12.0
+flask-whooshalchemy==0.56
+psycopg2==2.8.2
+oauth2client==4.1.0
+Flask-Migrate==2.4.0
+itsdangerous==0.24
+Jinja2==2.8
+MarkupSafe==0.23
+stripe
+Werkzeug==0.11.4
+wheel==0.24.0
+elastic-apm[flask]==4.2.2
